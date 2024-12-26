@@ -1,7 +1,7 @@
 declare module 'react-native/Libraries/vendor/emitter/EventEmitter' {
-  import {EventEmitter} from 'react-native';
+  import {NativeEventEmitter} from 'react-native';
 
-  const EventEmitter: EventEmitter;
+  const EventEmitter: NativeEventEmitter;
 
   export = EventEmitter;
 }
