@@ -23,7 +23,6 @@ import {
 import {NoInfer} from './utils/utility-types'
 import {genericMemo} from './utils/react'
 import {measureInWindow} from './utils/measureInWindow'
-import {hijackTextInputEvents} from './utils/hijackTextInputEvents'
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window')
 const KEYBOARD_PADDING = 48
