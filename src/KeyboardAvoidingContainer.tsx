@@ -218,7 +218,9 @@ export function useKeyboardAvoidingContainerProps<
         if (keyboardLayoutRef.current) return
 
         const {endCoordinates: newKeyboardLayout} = event
-        const newFocusedTextInputNodeHandle = NativeTextInput.State.currentlyFocusedField()
+        const newFocusedTextInputNodeHandle = NativeTextInput.State.currentlyFocusedInput
+          ? findNodeHandle(NativeTextInput.State.currentlyFocusedInput())
+          : NativeTextInput.State.currentlyFocusedField();
         const newStickyFooterNodeHandle = findNodeHandle(
           stickyFooterRef.current,
         )
@@ -280,45 +282,45 @@ export function useKeyboardAvoidingContainerProps<
     }
   }, [updateOffsets])
 
-  useEffect(() => {
-    const textInputEvents = hijackTextInputEvents()
-    // We watch for the switch between two text inputs and update offsets
-    // accordingly.
-    // A switch between two text inputs happens when a keyboard is shown
-    // and another text input is currently being focused on.
-    const sub = textInputEvents.addListener(
-      'textInputDidFocus',
-      newFocusedTextInputNodeHandle => {
-        requestAnimationFrame(async () => {
-          if (
-            !keyboardLayoutRef.current ||
-            !focusedTextInputLayoutRef.current
-          ) {
-            return
-          }
-
-          const newFocusedTextInputLayout = newFocusedTextInputNodeHandle
-            ? await measureInWindow(newFocusedTextInputNodeHandle)
-            : null
-
-          focusedTextInputLayoutRef.current = newFocusedTextInputLayout
-            ? {
-                ...newFocusedTextInputLayout,
-                screenY:
-                  newFocusedTextInputLayout.screenY +
-                  scrollViewOffsetRef.current,
-              }
-            : newFocusedTextInputLayout
-
-          updateOffsets()
-        })
-      },
-    )
-
-    return () => {
-      sub.remove()
-    }
-  }, [scrollViewOffset, updateOffsets])
+  // useEffect(() => {
+  //   const textInputEvents = hijackTextInputEvents()
+  //   // We watch for the switch between two text inputs and update offsets
+  //   // accordingly.
+  //   // A switch between two text inputs happens when a keyboard is shown
+  //   // and another text input is currently being focused on.
+  //   const sub = textInputEvents.addListener(
+  //     'textInputDidFocus',
+  //     newFocusedTextInputNodeHandle => {
+  //       requestAnimationFrame(async () => {
+  //         if (
+  //           !keyboardLayoutRef.current ||
+  //           !focusedTextInputLayoutRef.current
+  //         ) {
+  //           return
+  //         }
+  //
+  //         const newFocusedTextInputLayout = newFocusedTextInputNodeHandle
+  //           ? await measureInWindow(newFocusedTextInputNodeHandle)
+  //           : null
+  //
+  //         focusedTextInputLayoutRef.current = newFocusedTextInputLayout
+  //           ? {
+  //               ...newFocusedTextInputLayout,
+  //               screenY:
+  //                 newFocusedTextInputLayout.screenY +
+  //                 scrollViewOffsetRef.current,
+  //             }
+  //           : newFocusedTextInputLayout
+  //
+  //         updateOffsets()
+  //       })
+  //     },
+  //   )
+  //
+  //   return () => {
+  //     sub.remove()
+  //   }
+  // }, [scrollViewOffset, updateOffsets])
 
   const scrollViewContentContainerStyle = useMemo(() => {
     const flatContentContainerStyleProp =
