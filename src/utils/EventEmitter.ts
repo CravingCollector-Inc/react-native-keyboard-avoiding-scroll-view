@@ -1,5 +1,5 @@
 import {
-  EventEmitterListener,
+  NativeEventEmitter,
   EmitterSubscription as EventEmitterSubscription,
   EventEmitter as WeaklyTypedEventEmitterInstance,
 } from 'react-native'
@@ -45,7 +45,7 @@ export interface EventEmitterInstance<TEvents>
 }
 
 export type EventEmitter<TEvents> = EventEmitterInstance<TEvents>
-export type EventEmitterListener = EventEmitterListener
+export type EventEmitterListener = NativeEventEmitter
 
 export const EventEmitter = (WeaklyTypedEventEmitter as unknown) as {
   new <TEvents>(): EventEmitterInstance<TEvents>
